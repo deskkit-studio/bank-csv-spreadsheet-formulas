@@ -2,6 +2,10 @@
 
 Plain spreadsheet formulas for cleaning up a bank CSV export: turn text amounts and dates into real numbers and dates, give each row a category from a keyword list, and keep transfers out of your income and spending totals.
 
+> **Seller note:** I also sell a ready-made template, **BankPaste Budget** ($12, .xlsx): [BankPaste Budget product page on Gumroad](https://gum.co/u/oc51aojh). It's a separate product with its own formulas; the tutorial formulas below work without the template. This is its Monthly tab in the included demo file (made-up transactions), recalculated in LibreOffice:
+>
+> ![BankPaste Budget Monthly tab in the demo file with made-up transactions: income 2,450.00, spending 1,818.12, left over 178.63 marked provisional because 3 rows are uncategorized, uncategorized amount -453.25, and transfers between own accounts -350.00 shown separately and not counted.](https://public-files.gumroad.com/cvat6cc9tpidnoxc5qhp7qdhjqzl)
+
 No scripts, no macros, no LAMBDA. Every formula below was recalculated in **LibreOffice 26.8.3** against hand-written expected values (`test_formulas.py`). The functions used also exist in Excel and Google Sheets, but I haven't tested these formulas there.
 
 Files:
@@ -141,4 +145,4 @@ MIT (see `LICENSE`). The formulas are free to use.
 
 ## The ready-made version (disclosure: I sell it)
 
-I also sell a template built around the same ideas: **BankPaste Budget** ($12, .xlsx). Its formulas are **not** the ones above; an amount it can't read becomes **0** instead of an error, so compare a few rows and the month's totals with your bank statement. You paste a bank CSV, type which columns are date / description / amount (one signed column or separate money-out / money-in), pick the date order, and it builds a monthly budget vs actual view with keyword rules you can edit. It has no starter rule for credit-card payments; you pick that category yourself. Limits: US/UK-style numbers (1,234.56), dates as M/D/Y, D/M/Y or Y-M-D, up to 1,000 rows and one account per paste. I tested it in LibreOffice only, with made-up sample CSVs, not with real exports from any bank. Check the requirements on the product page before buying: https://caremini.gumroad.com/l/bankpaste-budget
+I also sell a template built around the same ideas: **BankPaste Budget** ($12, .xlsx). Its formulas are **not** the ones above; an amount it can't read becomes **0** instead of an error, so compare a few rows and the month's totals with your bank statement. You paste a bank CSV, type which columns are date / description / amount (one signed column or separate money-out / money-in), pick the date order, and it builds a monthly budget vs actual view with keyword rules you can edit. It has no starter rule for credit-card payments; you pick that category yourself. Limits: US/UK-style numbers (1,234.56), dates as M/D/Y, D/M/Y or Y-M-D, up to 1,000 rows and one account per paste. I tested it in LibreOffice only, with made-up sample CSVs, not with real exports from any bank. Check the requirements on the product page before buying: [BankPaste Budget product page on Gumroad](https://gum.co/u/oc51aojh)
