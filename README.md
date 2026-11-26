@@ -1,6 +1,6 @@
 # Bank CSV spreadsheet formulas
 
-Plain spreadsheet formulas for cleaning up a bank CSV export: turn text amounts and dates into real numbers and dates, give each row a category from a keyword list, and keep transfers out of your income and spending totals.
+Plain spreadsheet formulas for cleaning up a bank CSV export: turn text amounts and dates into real numbers and dates, give each row a category from a keyword list, keep transfers out of your income and spending totals, and mark charges that repeat (possible subscriptions).
 
 > **Seller note:** I also sell a ready-made template, **BankPaste Budget** ($12, .xlsx): [BankPaste Budget product page on Gumroad](https://gum.co/u/oc51aojh). It's a separate product with its own formulas; the tutorial formulas below work without the template. This is its Monthly tab in the included demo file (made-up transactions), recalculated in LibreOffice:
 >
@@ -12,8 +12,8 @@ Files:
 
 - `README.md`: the formulas, explained.
 - `sample-bank.csv`: 9 made-up rows (UK style: day/month/year dates, separate *Money out* / *Money in* columns, `£` amounts).
-- `test_formulas.py`: builds `example.xlsx` from the sample, recalculates it in LibreOffice and checks each row's date, amount, rule score and category, the four totals, and the single cases listed in section 6.
-- `example.xlsx`: the sample with all formulas filled in, as built and recalculated by `test_formulas.py` (LibreOffice). Running the test rebuilds it.
+- `test_formulas.py`: builds `example.xlsx` from the sample, recalculates it in LibreOffice and checks each row's date, amount, rule score and category, the four totals, the single cases listed in section 6, and the repeat check of section 7.
+- `example.xlsx`: the sample with all formulas filled in (the section 7 formula is in column I of Transactions; the extra **Repeats** sheets are its tests), as built and recalculated by `test_formulas.py` (LibreOffice). Running the test rebuilds it.
 
 The formulas assume English-style settings: a **point** as the decimal separator and a comma between formula arguments. With `;` as the argument separator or a comma as the decimal separator they need changes, and I haven't tested that.
 
@@ -128,6 +128,22 @@ Run it yourself (Python 3, `pip install openpyxl`, LibreOffice; set `SOFFICE=/pa
 ```
 python3 test_formulas.py
 ```
+
+## 7. Spot charges that repeat (possible subscriptions)
+
+Same columns as above: description in B, real date in E, signed amount in F. In I2:
+
+```
+=IF(F2>=0,"",IF(SUMPRODUCT(($B$2:$B$1000=B2)*($F$2:$F$1000=F2)*(ABS($E$2:$E$1000-E2)>=25))>0,"Repeats",""))
+```
+
+It shows `Repeats` on a money-out row when another row has the **same description and the same amount** at least **25 days** before or after it, so monthly and yearly charges both show up. Money-in rows are never marked. Fill it down, then filter column I for `Repeats` to get a list to check.
+
+- It's a hint, not proof: the same shop at the same price a month apart (a coffee, a bus fare) is marked too, and a subscription whose price changed, or whose description carries a changing reference number (`NETFLIX 8842`), is not.
+- The description must match exactly apart from upper/lower case: `netflix.com` matches `NETFLIX.COM`, but `NETFLIX.COM ` with a trailing space doesn't. `*` and `?` are plain characters here, not wildcards.
+- It looks at rows 2 to 1000; change all three `$...$1000` ranges for more. The date column must contain real dates (section 3). An error value anywhere in E2:E1000 or F2:F1000 (for example `#VALUE!` from a bad date) makes every money-out row show an error (money-in rows stay empty), so fix those first.
+
+`test_formulas.py` checks it on a separate **Repeats** sheet of 18 made-up rows: monthly (incl. a lower-case copy), yearly, exactly 25 days apart (marked) and 24 days apart (not marked), same shop with different amounts, the same charge only one day apart (not marked), `UBER *TRIP` next to `UBER X TRIP`, a trailing space, and repeating income (not marked). Two small sheets check that one error in column E, or in column F, turns every money-out row into an error and leaves money-in rows empty. In `example.xlsx` the formula is also filled in on the **Transactions** sheet (column I); no row there repeats, since the sample covers one month.
 
 ## Limits
 
